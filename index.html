@@ -898,8 +898,14 @@
     </div>
 
     <script>
-      // CONFIGURATION: Ganti alamat ini dengan URL Web Service Render Anda setelah melakukan deploy.
-      const BACKEND_URL = 'http://localhost:8000';
+      // CONFIGURATION: Jika dijalankan secara lokal, arahkan ke localhost:8000.
+      // Jika dideploy ke Hugging Face, secara otomatis menggunakan URL Space Anda.
+      // Jika Anda membuka lewat Vercel, ubah string URL di bawah dengan alamat Hugging Face Space Anda.
+      const BACKEND_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+        ? 'http://localhost:8000'
+        : (window.location.hostname.includes('vercel.app') 
+           ? 'https://sqezeenoso-youtubemp3-downloader.hf.space' 
+           : window.location.origin);
 
       let toastTimer;
 
