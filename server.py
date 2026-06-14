@@ -9,7 +9,7 @@ import re
 
 import tempfile
 
-PORT = 8000
+PORT = int(os.environ.get("PORT", 8000))
 DOWNLOADS_DIR = os.path.join(tempfile.gettempdir(), "downloader-mp3-downloads")
 os.makedirs(DOWNLOADS_DIR, exist_ok=True)
 

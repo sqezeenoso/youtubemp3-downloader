@@ -8,11 +8,16 @@ RUN apt-get update && apt-get install -y \
 
 WORKDIR /app
 
-# Salin berkas server ke dalam container
-COPY server.py .
+# Unduh yt-dlp secara langsung ke /app saat membangun Docker image agar aman dan cepat
+RUN curl -L https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp -o /app/yt-dlp && \
+    chmod a+rx /app/yt-dlp
 
-# Jalankan pada port 8000
-EXPOSE 8000
+# Salin berkas backend dan frontend ke dalam container
+COPY server.py .
+COPY index.html .
+
+# Expose port yang digunakan (Hugging Face defaultnya 7860)
+EXPOSE 7860
 
 # Perintah menjalankan server
 CMD ["python3", "server.py"]
