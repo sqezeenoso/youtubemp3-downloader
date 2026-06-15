@@ -155,6 +155,15 @@ class DownloaderHandler(http.server.BaseHTTPRequestHandler):
                 else:
                     raise FileNotFoundError("Gagal memproses berkas MP3.")
                     
+            except subprocess.CalledProcessError as e:
+                print("Error saat konversi (SubprocessError):", e)
+                print("STDOUT:", e.stdout)
+                print("STDERR:", e.stderr)
+                self.send_response(500)
+                self.send_header("Content-Type", "application/json")
+                self.send_header("Access-Control-Allow-Origin", "*")
+                self.end_headers()
+                self.wfile.write(json.dumps({"error": f"{str(e)}: {e.stderr}"}).encode())
             except Exception as e:
                 print("Error saat konversi:", e)
                 self.send_response(500)
