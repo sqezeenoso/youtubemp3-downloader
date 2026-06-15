@@ -133,6 +133,7 @@ class DownloaderHandler(http.server.BaseHTTPRequestHandler):
                 cookies_path = os.path.join(os.getcwd(), "cookies.txt")
                 cmd_dl = [
                     yt_dlp_path,
+                    "-4",
                     "--no-check-certificate",
                     "--user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
                     "--referer", "https://www.youtube.com/",
