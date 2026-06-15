@@ -1061,9 +1061,27 @@
 
         btn.disabled = true;
         pWrap.style.display = 'block';
+        let progress = 20;
         pFill.style.width = '20%';
         pPercent.innerText = '20%';
         pStatus.innerText = 'Menganalisis link...';
+
+        const progressInterval = setInterval(() => {
+          if (progress < 90) {
+            progress += Math.floor(Math.random() * 3) + 1;
+            if (progress > 90) progress = 90;
+            pFill.style.width = `${progress}%`;
+            pPercent.innerText = `${progress}%`;
+            
+            if (progress < 45) {
+              pStatus.innerText = 'Menganalisis file YouTube...';
+            } else if (progress < 70) {
+              pStatus.innerText = 'Mengunduh file audio...';
+            } else {
+              pStatus.innerText = 'Melakukan konversi ke MP3...';
+            }
+          }
+        }, 800);
 
         const apiUrl = `https://api.v02.api-b.com/api/v1/convert?url=https://www.youtube.com/watch?v=${videoId}&format=mp3&quality=${bitrate}`;
         const backupApiUrl = `https://api.vexdh.com/v1/convert?url=https://youtu.be/${videoId}&format=mp3&bitrate=${bitrate}`;
@@ -1085,8 +1103,6 @@
 
           // 2. Coba API Publik Utama jika server lokal gagal/tidak aktif
           if (!data || !data.download_url) {
-            pFill.style.width = '50%';
-            pPercent.innerText = '50%';
             pStatus.innerText = 'Sedang memproses (Server Utama)...';
             try {
               const response = await fetch(apiUrl);
@@ -1100,8 +1116,6 @@
 
           // 3. Coba API Server Cadangan jika server utama gagal
           if (!data || !data.download_url) {
-            pFill.style.width = '70%';
-            pPercent.innerText = '70%';
             pStatus.innerText = 'Sedang memproses (Server Cadangan)...';
             try {
               const response = await fetch(backupApiUrl);
@@ -1139,6 +1153,7 @@
           console.error(error);
           showToast('Gagal memproses file. Coba lagi beberapa saat.', true);
         } finally {
+          clearInterval(progressInterval);
           setTimeout(() => {
             btn.disabled = false;
             pWrap.style.display = 'none';
