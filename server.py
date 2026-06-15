@@ -98,16 +98,16 @@ class DownloaderHandler(http.server.BaseHTTPRequestHandler):
                     os.chmod(yt_dlp_path, 0o755)
                     print("yt-dlp berhasil diunduh!")
                 
-                # 2. Dapatkan judul video YouTube
-                cmd_title = [
-                    yt_dlp_path,
-                    "--get-title",
-                    video_url
-                ]
-                title_proc = subprocess.run(cmd_title, capture_output=True, text=True, check=True)
-                title = title_proc.stdout.strip()
-                if not title:
-                    title = "Sqezee_Noso_Audio"
+                # 2. Dapatkan judul video YouTube menggunakan noembed.com (cepat & aman dari blokir)
+                title = "Sqezee_Noso_Audio"
+                try:
+                    req_url = f"https://noembed.com/embed?url={urllib.parse.quote(video_url)}"
+                    req = urllib.request.Request(req_url, headers={'User-Agent': 'Mozilla/5.0'})
+                    with urllib.request.urlopen(req, timeout=5) as response:
+                        data = json.loads(response.read().decode())
+                        title = data.get("title", "Sqezee_Noso_Audio")
+                except Exception as ne:
+                    print("Gagal mengambil judul via noembed, menggunakan fallback:", ne)
                 
                 # Buat nama berkas yang aman dan natural
                 safe_title = make_safe_filename(title)
@@ -129,8 +129,12 @@ class DownloaderHandler(http.server.BaseHTTPRequestHandler):
                     return
                 
                 # 3. Jalankan proses unduh dan konversi ke mp3 menggunakan yt-dlp & ffmpeg
+                # Menambahkan user-agent dan referer agar tidak mudah diblokir oleh YouTube
                 cmd_dl = [
                     yt_dlp_path,
+                    "--no-check-certificate",
+                    "--user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+                    "--referer", "https://www.youtube.com/",
                     "-x",
                     "--audio-format", "mp3",
                     "--audio-quality", quality,
