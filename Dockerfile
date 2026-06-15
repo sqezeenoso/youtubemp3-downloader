@@ -15,6 +15,7 @@ RUN curl -L https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp -o 
 # Salin berkas backend dan frontend ke dalam container
 COPY server.py .
 COPY index.html .
+COPY cookies.tx[t] .
 
 # Expose port yang digunakan (Hugging Face defaultnya 7860)
 EXPOSE 7860

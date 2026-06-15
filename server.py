@@ -130,19 +130,27 @@ class DownloaderHandler(http.server.BaseHTTPRequestHandler):
                 
                 # 3. Jalankan proses unduh dan konversi ke mp3 menggunakan yt-dlp & ffmpeg
                 # Menambahkan user-agent dan referer agar tidak mudah diblokir oleh YouTube
+                cookies_path = os.path.join(os.getcwd(), "cookies.txt")
                 cmd_dl = [
                     yt_dlp_path,
                     "--no-check-certificate",
                     "--user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
                     "--referer", "https://www.youtube.com/",
+                ]
+                
+                if os.path.exists(cookies_path):
+                    print("Menggunakan cookies.txt untuk autentikasi YouTube...")
+                    cmd_dl.extend(["--cookies", cookies_path])
+                    
+                cmd_dl.extend([
                     "-x",
                     "--audio-format", "mp3",
                     "--audio-quality", quality,
                     "-o", os.path.join(DOWNLOADS_DIR, f"{safe_title}.%(ext)s"),
                     video_url
-                ]
+                ])
                 print(f"Memulai konversi: {video_url} dengan bitrate {quality} kbps...")
-                subprocess.run(cmd_dl, check=True, capture_output=True)
+                subprocess.run(cmd_dl, check=True)
                 
                 # 4. Cek apakah berkas MP3 berhasil terbuat
                 if os.path.exists(output_filepath):
