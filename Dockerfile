@@ -19,5 +19,4 @@ COPY index.html .
 # Expose port yang digunakan (Hugging Face defaultnya 7860)
 EXPOSE 7860
 
-# Perintah menjalankan server
-CMD ["python3", "server.py"]
+CMD ["python3", "-u", "server.py"]
