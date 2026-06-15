@@ -9,7 +9,7 @@ import re
 
 import tempfile
 
-PORT = int(os.environ.get("PORT", 8000))
+PORT = int(os.environ.get("PORT", 7860))
 DOWNLOADS_DIR = os.path.join(tempfile.gettempdir(), "downloader-mp3-downloads")
 os.makedirs(DOWNLOADS_DIR, exist_ok=True)
 
@@ -211,7 +211,7 @@ class DownloaderHandler(http.server.BaseHTTPRequestHandler):
 
 print(f"Server berjalan di http://localhost:{PORT}")
 try:
-    with socketserver.TCPServer(("", PORT), DownloaderHandler) as httpd:
+    with socketserver.TCPServer(("0.0.0.0", PORT), DownloaderHandler) as httpd:
         httpd.serve_forever()
 except KeyboardInterrupt:
     print("\nServer dihentikan.")
